@@ -1,4 +1,6 @@
 using System.Data.SQLite;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Xml.Linq;
 
 namespace LearningSQL_2022_2023
 {
@@ -12,6 +14,7 @@ namespace LearningSQL_2022_2023
         {
             InitializeComponent();
             InitializeDatabase();
+            LoadData();
         }
 
         private void InitializeDatabase()
@@ -37,12 +40,31 @@ namespace LearningSQL_2022_2023
             lstData.Items.Add(listViewItem);
         }
 
+        private void LoadData()
+        {
+            //this function will load data from the Database to the ListView
+            string sql = "SELECT * FROM People";
+            using (SQLiteCommand command = new SQLiteCommand(sql, _dbConnection))
+            {
+                using(SQLiteDataReader reader = command.ExecuteReader())
+                {
+                    ListViewItem listViewItem = null;
+                    while (reader.Read())
+                    {
+                        string[] row = {
+                            reader["Name"].ToString(),
+                            reader["Surname"].ToString(),
+                            reader["Age"].ToString()
+                        };
+                        listViewItem = new ListViewItem(row);
+                        lstData.Items.Add(listViewItem);
+                    }
+                }
+            }
+        }
+
         private void btnSave_Click(object sender, EventArgs e)
         {
-            string name = txtName.Text;
-            string surname = txtSurname.Text;
-            string age = txtAge.Text;
-
             string sql = "CREATE TABLE IF NOT EXISTS People (Name TEXT, Surname TEXT, Age INT)";
             using (SQLiteCommand command = new SQLiteCommand(sql, _dbConnection))
             {
@@ -52,10 +74,16 @@ namespace LearningSQL_2022_2023
             sql = "INSERT INTO People (Name, Surname, Age) VALUES (@Name, @Surname, @Age)";
             using (SQLiteCommand command = new SQLiteCommand(sql, _dbConnection))
             {
-                command.Parameters.AddWithValue("@Name", name);
-                command.Parameters.AddWithValue("@Surname", surname);
-                command.Parameters.AddWithValue("@Age", age);
-                command.ExecuteNonQuery();
+
+                foreach(ListViewItem item in lstData.Items)
+                {
+                    command.Parameters.Clear();
+                    command.Parameters.AddWithValue("@Name", item.SubItems[0].Text);
+                    command.Parameters.AddWithValue("@Surname", item.SubItems[1].Text);
+                    command.Parameters.AddWithValue("@Age", item.SubItems[2].Text);
+                    command.ExecuteNonQuery();
+                }
+                
             }
         }
     }

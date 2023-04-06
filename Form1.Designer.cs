@@ -91,10 +91,12 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "Name";
+            this.columnHeader1.Width = 150;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "Surname";
+            this.columnHeader2.Width = 150;
             // 
             // columnHeader3
             // 
@@ -115,7 +117,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(762, 421);
+            this.ClientSize = new System.Drawing.Size(762, 407);
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.lstData);
             this.Controls.Add(this.btnAdd);
